@@ -1,4 +1,4 @@
-
+```html
  <!DOCTYPE html>
  <html lang="en">
  <head>
@@ -172,3 +172,4 @@
      <script src="轮播图.js"></script>
  </body>
  </html>
+ ```
