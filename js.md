@@ -21,10 +21,7 @@ window.onload = function ()
         blb.style.display = 'none';
         tbutton.style.display = 'block';
         dbutton.style.display = 'block';
-       
 	}
-	
-    
 	var oBox = document.getElementById("box");
 	var oList = oBox.getElementsByTagName("ul")[0];
 	var aImg = oBox.getElementsByTagName("img");
@@ -33,7 +30,7 @@ window.onload = function ()
 	var bOrder = true;
 	var aTmp = [];
 	var aBtn = null;
-	var obtn;
+	var abtn;
 	
 	//生成数字按钮
 	for (i = 0; i < aImg.length ; i++) {
@@ -45,7 +42,7 @@ window.onload = function ()
 	oCount.innerHTML = aTmp.join("");
 	oBox.appendChild(oCount);	
 	aBtn = oBox.getElementsByTagName("ul")[1].getElementsByTagName("li");
-	abtn = oBox.getElementsByTagName("ul")[1].getElementsByTagName("li")[0];
+	abtn = aBtn[0];
 	//初始化状态
 	cutover();
 	
@@ -63,34 +60,15 @@ window.onload = function ()
 	function cutover()
 	{
         for (i = 0; i < aBtn.length; i++) aBtn[i].className = "";
-		if(index == 5){
-			aBtn[0].className = 'current';
-		}		
-		else{
 			aBtn[index].className = "current";
-		}
+			if(index == 5){
+				aBtn[0].className = 'current';
+			}
 		startMove(-(index * aImg[0].offsetHeight))
 	}
 	
-	function next()
-	{
-		
-		if(index == 6){
-			clearInterval(playTimer);
-			index = 0;
-			oList.style.top = 0;
-			aBtn[0].className = 'current';
-			playTimer = setInterval(next, 3000);
-		}
-		for (i = 0; i < aBtn.length; i++) aBtn[i].className = "";
-		aBtn[index].className = "current";
-		startMove(-(index * aImg[0].offsetHeight));
-		index++;
-
-		
-	}
 	
-	playTimer = setInterval(next, 3000);
+	playTimer = setInterval(next, 2000);
 	//移入停止自动播放
 	oBox.onmouseover = function ()
 	{
@@ -104,7 +82,7 @@ window.onload = function ()
 	//离开开始自动播放
 	oBox.onmouseout = function ()
 	{
-		playTimer = setInterval(next, 3000)
+		playTimer = setInterval(next, 2000)
     };
     
 	function startMove(iTarget)
@@ -123,56 +101,70 @@ window.onload = function ()
 		}else{
 			iSpeed = Math.floor(iSpeed);
 		}
-		if(oList.offsetTop == iTarget) {
-			clearInterval(timer) ;
-	    }else{
 			oList.style.top = oList.offsetTop + iSpeed + "px"
-		} 
+
     }
     tbutton.onclick = function(){
 		if(index == 0){
-			clearInterval(playTimer);
 			index = 5;
-			oList.style.top = -2000 + 'px';
-			aBtn[5].className = 'current';
-			playTimer = setInterval(next, 3000);
+			oList.style.top = -2000 + 'px';	
 		}
         index --;
 		cutover();
     }
-    dbutton.onclick = function(){
-		if(index == 6){
-			clearInterval(playTimer);
+    dbutton.onclick = next;
+	function next()
+	{
+		
+		if(index == 5){
 			index = 0;
-			oList.style.top = 0;
-			aBtn[0].className = 'current';
-			playTimer = setInterval(next, 3000);
+			oList.style.top = 0 + 'px';
+		}
+		else if(index == 5)
+		{
+				aBtn[0].style = { float:'left',
+				width:'20px',
+				height:'20px',color:'#fff',opacity:1,filter:alpha(opacity=100),fontWeight:700}
 		}
         index ++;
         cutover();
-    }
-    // tbutton.onmouseover  = function(){
-	// 	tbutton.style.opacity = 0.3;
-	// 	clearInterval(playTimer);
-	// }
-	// tbutton.onmouseout  = function(){
-	// 	playTimer = setInterval(next, 3000)
-	// }
+	}
     tbutton.onmouseout  = function(){
-        tbutton.style.opacity = 0.1;
+		tbutton.style.opacity = 0.1;
+		playTimer = setInterval(next, 2000);
 	}
 	tbutton.onmouseover  = function(){
-        tbutton.style.opacity = 0.3;
+		tbutton.style.opacity = 0.3;
+		clearInterval(playTimer);
+		
     }
     dbutton.onmouseover  = function(){
-        dbutton.style.opacity = 0.3;
+		dbutton.style.opacity = 0.3;
+		clearInterval(playTimer);
     }
-    dbutton.onmouseout  = function(){
-        dbutton.style.opacity = 0.1;
+    dbutton.onmouseout  = function net (){
+		dbutton.style.opacity = 0.1;
+		playTimer = setInterval(next, 2000)
 	}
 	var shd = oBox.getElementsByTagName('ul')[1].getElementsByTagName("li")[5];
 	shd.style.display = 'none';
 
+	function throttle(fn, delay){
+		var timer = null;
+		return function(){
+			var context = this, 
+				args = arguments;
+			clearTimeout(timer);
+			timer = setTimeout(function(){
+				fn.apply(context, args);
+			}, delay);
+		};
+   };
+   var func = throttle(next,3000)
+	window.onresize=function(){
+		next();
+	};
 	
 };
+
 ```
